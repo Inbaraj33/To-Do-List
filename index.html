@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster - Modern To-Do List</title>
+    <link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-tasks logo-icon"></i>
+                    <h1 class="app-title">TaskMaster</h1>
+                </div>
+                <div class="theme-toggle">
+                    <button id="theme-btn" class="theme-btn">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Task Input Section -->
+            <section class="task-input-section">
+                <div class="input-container">
+                    <form id="task-form" class="task-form">
+                        <div class="input-group">
+                            <input 
+                                type="text" 
+                                id="task-input" 
+                                class="task-input" 
+                                placeholder="What needs to be done?"
+                                autocomplete="off"
+                                required
+                            >
+                            <select id="priority-select" class="priority-select">
+                                <option value="low">Low Priority</option>
+                                <option value="medium" selected>Medium Priority</option>
+                                <option value="high">High Priority</option>
+                            </select>
+                            <button type="submit" class="add-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Task Statistics -->
+            <section class="stats-section">
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="total-tasks">0</span>
+                            <span class="stat-label">Total Tasks</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="completed-tasks">0</span>
+                            <span class="stat-label">Completed</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="pending-tasks">0</span>
+                            <span class="stat-label">Pending</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filter and Search Section -->
+            <section class="filter-section">
+                <div class="filter-container">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input 
+                            type="text" 
+                            id="search-input" 
+                            placeholder="Search tasks..."
+                            class="search-input"
+                        >
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">
+                            <i class="fas fa-list"></i>
+                            All
+                        </button>
+                        <button class="filter-btn" data-filter="pending">
+                            <i class="fas fa-clock"></i>
+                            Pending
+                        </button>
+                        <button class="filter-btn" data-filter="completed">
+                            <i class="fas fa-check"></i>
+                            Completed
+                        </button>
+                        <button class="filter-btn" data-filter="high">
+                            <i class="fas fa-exclamation"></i>
+                            High Priority
+                        </button>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="clear-completed" class="action-btn">
+                            <i class="fas fa-trash"></i>
+                            Clear Completed
+                        </button>
+                        <button id="clear-all" class="action-btn danger">
+                            <i class="fas fa-trash-alt"></i>
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tasks List Section -->
+            <section class="tasks-section">
+                <div class="tasks-container">
+                    <div id="empty-state" class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No tasks yet!</h3>
+                        <p>Add your first task above to get started</p>
+                    </div>
+                    <ul id="tasks-list" class="tasks-list"></ul>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 TaskMaster. Built with ❤️ for productivity.</p>
+        </footer>
+    </div>
+
+    <!-- Task Template (Hidden) -->
+    <template id="task-template">
+        <li class="task-item" data-id="">
+            <div class="task-content">
+                <div class="task-left">
+                    <button class="task-checkbox">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <div class="task-details">
+                        <span class="task-text"></span>
+                        <div class="task-meta">
+                            <span class="task-priority"></span>
+                            <span class="task-date"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="task-right">
+                    <button class="task-btn edit-btn" title="Edit Task">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="task-btn delete-btn" title="Delete Task">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </li>
+    </template>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Task</h3>
+                <button class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-form">
+                    <div class="form-group">
+                        <label for="edit-task-input">Task Description</label>
+                        <input 
+                            type="text" 
+                            id="edit-task-input" 
+                            class="form-input"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-priority-select">Priority</label>
+                        <select id="edit-priority-select" class="form-input">
+                            <option value="low">Low Priority</option>
+                            <option value="medium">Medium Priority</option>
+                            <option value="high">High Priority</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancel-edit">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Action</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">Are you sure you want to perform this action?</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancel-confirm">Cancel</button>
+                    <button type="button" class="btn-danger" id="confirm-action">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
